@@ -1,0 +1,43 @@
+:root {
+  --entity-color: #c0fff2;
+  --entity-color-dark: #a7ffed;
+  --entity-color-darker: #74ffe2;
+}
+
+abbr[title] {
+  background: var(--entity-color);
+  border: 1px solid var(--entity-color-dark);
+  border-radius: .2em;
+  cursor: help;
+  display: inline-block;
+  outline: none;
+  padding: .1em .2em;
+  text-decoration: none;
+}
+
+abbr[title]:hover {
+  background: var(--entity-color-dark);
+  border-color: var(--entity-color-darker);
+}
+
+body {
+  padding-top: 4rem;
+}
+
+section {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+kbd {
+  background: #333;
+  border-radius: .2em;
+  color: #fff;
+  display: inline-block;
+  padding: .1em .2em;
+}
+
+.lead {
+  font-size: 1.4rem;
+}

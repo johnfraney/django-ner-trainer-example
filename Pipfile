@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-ner-trainer = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+
+[dev-packages]
+ipython = "*"
+
+[requires]
+python_version = "3.6"

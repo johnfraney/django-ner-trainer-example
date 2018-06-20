@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Phrases{% endblock %}
+
+{% block content %}
+
+{% for phrase in object_list %}
+  <div><a href="{% url 'phrase-detail' pk=phrase.id %}">{{ phrase.text }}</a></div>
+{% endfor %}
+
+{% endblock %}

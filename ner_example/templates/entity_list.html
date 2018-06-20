@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Entities{% endblock %}
+
+{% block content %}
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Label</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entity in object_list %}
+      <tr>
+        <td>{{ entity.name }}</td>
+        <td>{{ entity.label }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+

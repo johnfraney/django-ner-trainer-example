@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+{% verbatim %}
+<div id="app">
+  <div>
+    <phrase-container
+      :id="phraseElemId"
+      :phrase="phrase"
+      :entities="entities"
+      :phrase-entities="allPhraseEntities"
+      class="lead"
+    >
+    </phrase-container>
+
+    <div>
+      <select
+        v-model="selectedEntity"
+        :disabled="entities.length === 0"
+        class="third"
+      >
+        <option v-for="option in entities" :key="option.label" :value="option.label">
+          {{ option.name }}
+        </option>
+      </select>
+
+      <button @click="setEntity">Set Entity</button>
+      <button @click="clearEntities">Clear Entities</button>
+    </div>
+    <button @click="saveEntities">Save Entities</button>
+  </div>
+  <hr>
+  <div>Shortcuts</div>
+  <div>
+    <small>
+      <kbd>Ctrl+E</kbd>
+      <span> : set an entity</span>
+    </small>
+  </div>
+  <div>
+    <small>
+      <kbd>Ctrl+Enter</kbd>
+      <span> : save</span>
+    </small>
+  </div>
+</div>
+{% endverbatim %}
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+<script src="{% static 'js/phrase_container.js' %}"></script>
+<script>
+var app = new Vue({
+  el: '#app',
+
+  http: {
+    root: '/api/'
+  },
+
+  data: {
+    phraseEntities: [],
+    phrase: {},
+    phraseId: {{ phrase.id }},
+    phraseElemId: 'phrase',
+    selectedEntity: null,
+    entities: []
+  },
+
+  methods: {
+    getSelectionInPhraseElem () {
+      let selection = document.getSelection()
+      let anchorElement = selection.anchorNode.parentElement
+      let focusElement = selection.focusNode.parentElement
+      if (!selection.isCollapsed &&
+          anchorElement === focusElement &&
+          anchorElement.id === this.phraseElemId) {
+        return selection
+      }
+      return null
+    },
+
+    getSelectionRange () {
+      let selection = this.getSelectionInPhraseElem()
+
+      if (selection) {
+        // Ensure the first offset is the closest to the beginning
+        let selectionRange = [selection.anchorOffset, selection.focusOffset].sort((a, b) => a - b)
+        let start = selectionRange[0]
+        let end = selectionRange[1]
+
+        // Account for #phrase including child elements, which resets the selection offsets
+        let phraseText = selection.anchorNode.parentElement.textContent
+        let phraseSegmentText = selection.anchorNode.textContent
+        let segmentOffset = phraseText.indexOf(phraseSegmentText)
+        start += segmentOffset
+        end += segmentOffset
+
+        return {start, end}
+      }
+      return null
+    },
+
+    clearEntities () {
+      this.phraseEntities = []
+      this.phrase.entities = []
+    },
+
+    setEntity () {
+      let selection = this.getSelectionRange()
+      if (!this.selectedEntity) {
+        alert('Please select an entity from the dropdown')
+        return false
+      }
+      if (!selection) {
+        alert('Please select one or more words in the phrase before setting an entity')
+        return false
+      }
+      let phraseEntity = {
+        start_index: selection.start,
+        end_index: selection.end,
+        entity: this.selectedEntity
+      }
+      this.phraseEntities.push(phraseEntity)
+      this.selectedEntity = null
+    },
+
+    async saveEntities () {
+      let vm = this
+      let response = await this.$http.post(`/phrases/${this.phraseId}/set-entities/`, {
+        entities: vm.allPhraseEntities
+      })
+      console.log(response)
+    },
+
+    ctrlEListener (evt) {
+      if (evt.keyCode === 69 && evt.ctrlKey) {
+        this.setEntity()
+      }
+    },
+
+    ctrlEnterListener (evt) {
+      if (evt.keyCode === 13 && evt.ctrlKey) {
+        this.saveEntities()
+      }
+    },
+  },
+
+  computed: {
+    allPhraseEntities () {
+      let allPhraseEntities = []
+      if (this.phrase.entities && this.phraseEntities) {
+        allPhraseEntities = this.phrase.entities.concat(this.phraseEntities)
+      }
+      return allPhraseEntities
+    },
+
+    selectedEntityName () {
+      return this.entities.find(entity => entity.label === this.selectedEntity).name
+    }
+  },
+
+  created () {
+    this.$http.get(`phrases/${this.phraseId}`).then(response => {
+      this.phrase = response.body
+    })
+    this.$http.get('entities/').then(response => {
+      this.entities = response.body
+    })
+    // Add keyboard shortcut listeners
+    document.addEventListener('keyup', this.ctrlEListener)
+    document.addEventListener('keyup', this.ctrlEnterListener)
+  },
+
+  destroyed () {
+    // Remove keyboard shortcut listeners
+    document.removeEventListener('keyup', this.ctrlEListener)
+    document.removeEventListener('keyup', this.ctrlEnterListener)
+  },
+})
+</script>
+{% endblock %}
