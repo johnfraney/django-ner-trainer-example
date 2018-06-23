@@ -20,7 +20,9 @@ from . import views
 
 urlpatterns = [
     path('entities/', views.EntityList.as_view(), name='entity-list'),
+    path('entities/create/', views.EntityCreate.as_view(), name='entity-create'),
     path('phrases/', views.PhraseList.as_view(), name='phrase-list'),
+    path('phrases/create/', views.PhraseCreate.as_view(), name='phrase-create'),
     path('phrases/untagged/', views.PhraseListUntagged.as_view(), name='phrase-list-untagged'),
     path('phrases/<int:pk>/', views.PhraseDetail.as_view(), name='phrase-detail'),
     path('phrases/<int:pk>/set-entities/', views.set_phrase_entities, name='phrase-set-entities'),

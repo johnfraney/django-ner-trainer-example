@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
-from django.views.generic import DetailView, ListView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView
 
 from ner_trainer.models import Entity, Phrase, PhraseEntity
 
@@ -10,9 +11,23 @@ class EntityList(ListView):
     template_name = 'entity_list.html'
 
 
+class EntityCreate(CreateView):
+    model = Entity
+    template_name = 'entity_form.html'
+    fields = ('name', 'label')
+    success_url = reverse_lazy('entity-list')
+
+
 class PhraseList(ListView):
     model = Phrase
     template_name = 'phrase_list.html'
+
+
+class PhraseCreate(CreateView):
+    model = Phrase
+    template_name = 'phrase_form.html'
+    fields = ('text',)
+    success_url = reverse_lazy('phrase-list')
 
 
 class PhraseListUntagged(PhraseList):

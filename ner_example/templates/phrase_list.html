@@ -3,6 +3,10 @@
 {% block title %}Phrases{% endblock %}
 
 {% block content %}
+<h2>
+  Phrases
+  <a href="{% url 'phrase-create' %}">+</a>
+</h2>
 
 {% for phrase in object_list %}
   <div><a href="{% url 'phrase-detail' pk=phrase.id %}">{{ phrase.text }}</a></div>
