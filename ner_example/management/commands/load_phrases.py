@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
             with open(phrase_file_path) as phrase_file:
                 for line in phrase_file:
+                    line = line.strip()
                     if not line in phrase_texts:
                         phrases_to_create.append(Phrase(text=line))
                         phrase_texts.append(line)
