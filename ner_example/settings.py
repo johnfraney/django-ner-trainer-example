@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'ner_trainer',
+
+    'ner_example',
 ]
 
 MIDDLEWARE = [
