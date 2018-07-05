@@ -20,5 +20,8 @@
         {% block content %}{% endblock %}
       </section>
     </main>
+    <script src="{% static 'js/vue.js' %}"></script>
+    <script src="{% static 'js/vue-resource.js' %}"></script>
+    {% block js %}{% endblock %}
   </body>
 </html>

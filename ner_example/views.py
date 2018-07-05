@@ -17,6 +17,12 @@ class EntityCreate(CreateView):
     fields = ('name', 'label')
     success_url = reverse_lazy('entity-list')
 
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields['name'].widget.attrs['v-model'] = 'name'
+        form.fields['label'].widget.attrs['v-model'] = 'label'
+        return form
+
 
 class PhraseList(ListView):
     model = Phrase

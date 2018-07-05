@@ -4,10 +4,28 @@
 
 <h2>Entity {% if object %}Update{% else %}Create{% endif %}</h2>
 
+<div id="app">
 <form action="" method="post">
   {% csrf_token %}
   {{ form }}
   <button>Save</button>
 </form>
+</div>
 
+{% endblock %}
+
+{% block js %}
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    name: '',
+  },
+  computed: {
+    label: function() {
+      return this.name.toUpperCase().replace(' ', '_')
+    }
+  }
+})
+</script>
 {% endblock %}

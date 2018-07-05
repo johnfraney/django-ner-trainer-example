@@ -47,9 +47,9 @@
   </div>
 </div>
 {% endverbatim %}
+{% endblock %}
 
-<script src="{% static 'js/vue.js' %}"></script>
-<script src="{% static 'js/vue-resource.js' %}"></script>
+{% block js %}
 <script src="{% static 'js/phrase_container.js' %}"></script>
 <script>
 var app = new Vue({
@@ -131,7 +131,7 @@ var app = new Vue({
       let response = await this.$http.post(`/phrases/${this.phraseId}/set-entities/`, {
         entities: vm.allPhraseEntities
       })
-      console.log(response)
+      window.location = '/phrases/untagged/'
     },
 
     ctrlEListener (evt) {
@@ -181,3 +181,4 @@ var app = new Vue({
 })
 </script>
 {% endblock %}
+
