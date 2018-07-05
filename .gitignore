@@ -59,3 +59,4 @@ site/
 
 # Example app
 db.sqlite3
+/spacy_model
