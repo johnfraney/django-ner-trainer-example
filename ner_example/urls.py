@@ -34,6 +34,7 @@ urlpatterns = [
         views.set_phrase_entities,
         name='phrase-set-entities'
     ),
+    path('test-model/', views.ModelTestView.as_view(), name='test-model'),
     path('api/', include(ner_trainer_urls)),
     path('admin/', admin.site.urls),
 ]

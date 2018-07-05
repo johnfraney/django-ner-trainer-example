@@ -1,9 +1,12 @@
 import json
+import spacy
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, FormView, ListView
 
 from ner_trainer.models import Entity, Phrase, PhraseEntity
+from .forms import ModelTestForm
 
 
 class EntityList(ListView):
@@ -44,6 +47,29 @@ class PhraseListUntagged(PhraseList):
 class PhraseDetail(DetailView):
     model = Phrase
     template_name = 'phrase_detail.html'
+
+
+class ModelTestView(FormView):
+    form_class = ModelTestForm
+    template_name = 'model_test.html'
+
+    def form_valid(self, form):
+        nlp = spacy.load('spacy_model')
+        text = form.cleaned_data['text']
+        doc = nlp(text)
+        phrase_entities = []
+        entity_labels = [ent.label_ for ent in doc.ents]
+        entities = Entity.objects.filter(label__in=entity_labels)
+        for ent in doc.ents:
+            phrase_entities.append({
+                'entity': entities.filter(label=ent.label_).first(),
+                'text': ent.text,
+            })
+        return render(self.request, 'model_test.html', context={
+            'text': text,
+            'form': form,
+            'phrase_entities': phrase_entities,
+        })
 
 
 def set_phrase_entities(request, pk):

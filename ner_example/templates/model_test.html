@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Model Test</h2>
+
+<div id="app">
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form }}
+  <button>Test</button>
+</form>
+</div>
+
+{% if text %}
+  <h3>Results</h3>
+  <p>{{ text }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Text</th>
+        <th>Entity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for phrase_entity in phrase_entities %}
+      <tr>
+        <td><blockquote>{{ phrase_entity.text }}</blockquote></td>
+        <td>{{ phrase_entity.entity.name }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% endblock %}
